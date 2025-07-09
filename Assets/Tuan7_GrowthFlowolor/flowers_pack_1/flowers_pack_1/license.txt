@@ -1,0 +1,11 @@
+Model Information:
+* title:	flowers_pack_1
+* source:	https://sketchfab.com/3d-models/flowers-pack-1-a23d370f7e724cc6b831263d5d51bceb
+* author:	Daniel.Marquez2 (https://sketchfab.com/Daniel.Marquez2)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "flowers_pack_1" (https://sketchfab.com/3d-models/flowers-pack-1-a23d370f7e724cc6b831263d5d51bceb) by Daniel.Marquez2 (https://sketchfab.com/Daniel.Marquez2) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
