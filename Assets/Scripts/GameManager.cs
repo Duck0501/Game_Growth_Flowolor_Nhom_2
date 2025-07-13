@@ -14,6 +14,11 @@ public class GameManager : MonoBehaviour
     public GameObject currentLevel;
     public GameObject[] levelPrefabs;
 
+    public AudioSource audioSource;
+    public AudioClip bgMusic;
+    public AudioClip winSound;
+    public AudioClip loseSound;
+
     public Transform levelParent;
 
     public Button buttonPlay;
@@ -22,9 +27,12 @@ public class GameManager : MonoBehaviour
     public Button buttonExitLevel;
 
     public Button[] levelButtons;
+    public Text moveCountText;
+    public Text scoreText;
 
     private int currentLevelIndex = -1;
     private List<WinBlock> winBlocks = new List<WinBlock>();
+    private int moveCount = 0;
 
     void Awake()
     {
@@ -42,6 +50,13 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         ShowCanvas(canvasHome);
+
+        if (audioSource != null && bgMusic != null)
+        {
+            audioSource.clip = bgMusic;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
 
         buttonPlay.onClick.AddListener(() =>
         {
@@ -70,7 +85,10 @@ public class GameManager : MonoBehaviour
                 LoadLevel(level);
             });
         }
+
+        UpdateMoveCountText();
     }
+
     void ShowCanvas(GameObject targetCanvas)
     {
         canvasHome.SetActive(targetCanvas == canvasHome);
@@ -92,6 +110,8 @@ public class GameManager : MonoBehaviour
     {
         HideAllCanvases();
         winBlocks.Clear();
+        moveCount = 0;
+        UpdateMoveCountText();
         if (currentLevel != null)
         {
             Destroy(currentLevel);
@@ -121,6 +141,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     public void ShowWinCanvas()
     {
         canvasHome.SetActive(false);
@@ -128,6 +149,16 @@ public class GameManager : MonoBehaviour
         canvasLose.SetActive(false);
         canvasWin.SetActive(true);
         DisableOtherButtons(canvasWin);
+
+        if (audioSource != null && winSound != null)
+        {
+            audioSource.PlayOneShot(winSound);
+        }
+
+        if (scoreText != null)
+        {
+            scoreText.text = "Score: " + moveCount;
+        }
 
         Button[] winButtons = canvasWin.GetComponentsInChildren<Button>();
         foreach (Button btn in winButtons)
@@ -177,6 +208,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     public void ShowLoseCanvas()
     {
         canvasHome.SetActive(false);
@@ -184,6 +216,11 @@ public class GameManager : MonoBehaviour
         canvasWin.SetActive(false);
         canvasLose.SetActive(true);
         DisableOtherButtons(canvasLose);
+
+        if (audioSource != null && loseSound != null)
+        {
+            audioSource.PlayOneShot(loseSound);
+        }
 
         Button[] loseButtons = canvasLose.GetComponentsInChildren<Button>();
         foreach (Button btn in loseButtons)
@@ -210,6 +247,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     void DisableOtherButtons(GameObject activeCanvas)
     {
         Button[] allButtons = FindObjectsOfType<Button>(true);
@@ -219,6 +257,7 @@ public class GameManager : MonoBehaviour
             btn.interactable = inActiveCanvas;
         }
     }
+
     void EnableAllButtons()
     {
         Button[] allButtons = FindObjectsOfType<Button>(true);
@@ -227,6 +266,7 @@ public class GameManager : MonoBehaviour
             btn.interactable = true;
         }
     }
+
     void HideAllCanvases()
     {
         canvasHome.SetActive(false);
@@ -237,10 +277,12 @@ public class GameManager : MonoBehaviour
 
         EnableAllButtons();
     }
+
     public int GetCurrentLevelIndex()
     {
         return currentLevelIndex;
     }
+
     public void RegisterWinBlock(WinBlock block)
     {
         if (!winBlocks.Contains(block))
@@ -258,5 +300,23 @@ public class GameManager : MonoBehaviour
         }
 
         ShowWinCanvas();
+    }
+
+    public void IncrementMoveCount()
+    {
+        moveCount++;
+        UpdateMoveCountText();
+        if (moveCount > 20)
+        {
+            ShowLoseCanvas();
+        }
+    }
+
+    private void UpdateMoveCountText()
+    {
+        if (moveCountText != null)
+        {
+            moveCountText.text = "Move: " + moveCount;
+        }
     }
 }

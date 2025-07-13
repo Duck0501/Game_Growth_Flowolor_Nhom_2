@@ -89,6 +89,8 @@ public class GameManagerMove : MonoBehaviour
             HideHiddenObjects();
             currentBlock = null;
             currentBlockParent = null;
+
+            GameManager.Instance.IncrementMoveCount();
         });
     }
 }
