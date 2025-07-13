@@ -12,12 +12,20 @@ public class GameManagerMove : MonoBehaviour
     public List<Transform> hiddenParents = new List<Transform>();     // Slot parent
 
     private ClickableBlock currentBlock;
-    private Transform currentBlockParent;  // ⭐ Parent của block đang chọn
+    private Transform currentBlockParent;  // Parent của block đang chọn
+    private GameManager gameManager; // Reference tới GameManager
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        // Tìm GameManager
+        gameManager = FindObjectOfType<GameManager>();
+        if (gameManager == null)
+        {
+            Debug.LogError("Không tìm thấy GameManager trong scene!");
+        }
     }
 
     public void ShowHiddenObjects()
@@ -42,9 +50,9 @@ public class GameManagerMove : MonoBehaviour
 
     public void SwapWithSlot(Transform slotParent)
     {
-        if (currentBlockParent == null || slotParent == null) return;
+        if (currentBlock == null || currentBlockParent == null || slotParent == null) return;
 
-        // Lưu lại transform (không lấy lại sau tween vì có thể lệch)
+        // Lưu lại transform
         Vector3 posA = currentBlockParent.position;
         Quaternion rotA = currentBlockParent.rotation;
 
@@ -60,7 +68,7 @@ public class GameManagerMove : MonoBehaviour
         if (colA != null) colA.enabled = false;
         if (colB != null) colB.enabled = false;
 
-        // Tạo tween và giữ reference để Kill
+        // Tạo tween
         Tweener tweenA = currentBlockParent.DOMove(posB, duration);
         Tweener tweenB = slotParent.DOMove(posA, duration);
 
@@ -75,13 +83,13 @@ public class GameManagerMove : MonoBehaviour
 
         seq.OnComplete(() =>
         {
-            // Kill tween để ngắt ảnh hưởng
+            // Hủy tween
             tweenA.Kill();
             tweenB.Kill();
             rotA_Tween.Kill();
             rotB_Tween.Kill();
 
-            // 🔁 Hoán đổi thật sự
+            // Hoán đổi vị trí
             currentBlockParent.position = posB;
             currentBlockParent.rotation = rotB;
 
@@ -96,8 +104,16 @@ public class GameManagerMove : MonoBehaviour
             HideHiddenObjects();
             currentBlock = null;
             currentBlockParent = null;
+
+            // Kiểm tra đích và thắng
+            if (WinConditionChecker.Instance != null && gameManager != null)
+            {
+                int levelIndex = gameManager.GetCurrentLevelIndex();
+                WinConditionChecker.Instance.SetupLevel(levelIndex);
+                WinConditionChecker.Instance.UpdatePlayerPositions();
+                WinConditionChecker.Instance.CheckDestinationObjects(); 
+                WinConditionChecker.Instance.CheckWinCondition();
+            }
         });
     }
-
-
 }
