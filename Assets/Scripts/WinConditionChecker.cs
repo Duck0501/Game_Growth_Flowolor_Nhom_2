@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System;
+using TMPro;
 
 [System.Serializable]
 public class LevelDestination
 {
-    public Vector3[] destinations; 
-    public GameObject[] destinationObjects; 
+    public Vector3[] destinations;
+    public GameObject[] destinationObjects;
 }
 
 public class WinConditionChecker : MonoBehaviour
@@ -13,18 +14,25 @@ public class WinConditionChecker : MonoBehaviour
     public static WinConditionChecker Instance;
 
     [Header("Vị trí đích và GameObject cho từng level")]
-    public LevelDestination[] levelDestinations; 
+    public LevelDestination[] levelDestinations;
 
     [Header("Danh sách player (kéo vào đây)")]
-    public Transform[] playerTransforms; 
+    public Transform[] playerTransforms;
 
     [Header("Ngưỡng so sánh tọa độ")]
-    public float epsilon = 0.1f; 
+    public float epsilon = 0.1f;
 
-    private Vector3[] destinationPositions; 
+    [Header("Giới hạn số lần di chuyển")]
+    [SerializeField] private int maxMoves = 10; // Giới hạn tối đa, chỉnh trong Inspector
+
+    [Header("Text hiển thị số lần di chuyển")]
+    public TextMeshProUGUI moveCountText; // Sử dụng TMP_Text cho TextMeshPro
+
+    private Vector3[] destinationPositions;
     private GameObject[] destinationObjects;
     private Vector3[] playerPositions;
-    private GameManager gameManager; 
+    private GameManager gameManager;
+    private int moveCount = 0; // Số lần di chuyển
 
     private void Awake()
     {
@@ -54,6 +62,7 @@ public class WinConditionChecker : MonoBehaviour
             }
         }
         UpdatePlayerPositions();
+        UpdateMoveCountText();
     }
 
     public void UpdatePlayerPositions()
@@ -89,6 +98,7 @@ public class WinConditionChecker : MonoBehaviour
             }
         }
     }
+
     public void CheckWinCondition()
     {
         if (destinationPositions == null || playerPositions == null ||
@@ -102,19 +112,16 @@ public class WinConditionChecker : MonoBehaviour
         for (int i = 0; i < destinationPositions.Length; i++)
         {
             if (Mathf.Abs(playerPositions[i].x - destinationPositions[i].x) > epsilon ||
-                Mathf.Abs(playerPositions[i].z - destinationPositions[i].z) > epsilon) 
+                Mathf.Abs(playerPositions[i].z - destinationPositions[i].z) > epsilon)
             {
                 allMatched = false;
                 break;
             }
         }
 
-        if (allMatched)
+        if (allMatched && gameManager != null)
         {
-            if (gameManager != null)
-            {
-                gameManager.ShowWinCanvas();
-            }
+            gameManager.ShowWinCanvas();
         }
     }
 
@@ -138,5 +145,29 @@ public class WinConditionChecker : MonoBehaviour
 
         UpdatePlayerPositions();
         CheckDestinationObjects();
+    }
+
+    public void ResetMoveCount()
+    {
+        moveCount = 0;
+        UpdateMoveCountText();
+    }
+
+    public void IncrementMoveCount()
+    {
+        moveCount++;
+        if (moveCount > maxMoves && gameManager != null)
+        {
+            gameManager.ShowLoseCanvas();
+        }
+        UpdateMoveCountText();
+    }
+
+    private void UpdateMoveCountText()
+    {
+        if (moveCountText != null)
+        {
+            moveCountText.text = moveCount + "/" + maxMoves;
+        }
     }
 }

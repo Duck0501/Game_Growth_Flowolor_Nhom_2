@@ -13,14 +13,13 @@ public class GameManagerMove : MonoBehaviour
 
     private ClickableBlock currentBlock;
     private Transform currentBlockParent;  // Parent của block đang chọn
-    private GameManager gameManager; // Reference tới GameManager
+    private GameManager gameManager;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        // Tìm GameManager
         gameManager = FindObjectOfType<GameManager>();
         if (gameManager == null)
         {
@@ -50,9 +49,11 @@ public class GameManagerMove : MonoBehaviour
 
     public void SwapWithSlot(Transform slotParent)
     {
-        if (currentBlock == null || currentBlockParent == null || slotParent == null) return;
+        if (currentBlock == null || currentBlockParent == null || slotParent == null)
+        {
+            return;
+        }
 
-        // Lưu lại transform
         Vector3 posA = currentBlockParent.position;
         Quaternion rotA = currentBlockParent.rotation;
 
@@ -61,14 +62,12 @@ public class GameManagerMove : MonoBehaviour
 
         float duration = currentBlock.GetMoveDuration();
 
-        // Tắt collider
         Collider colA = currentBlockParent.GetComponentInChildren<Collider>();
         Collider colB = slotParent.GetComponentInChildren<Collider>();
 
         if (colA != null) colA.enabled = false;
         if (colB != null) colB.enabled = false;
 
-        // Tạo tween
         Tweener tweenA = currentBlockParent.DOMove(posB, duration);
         Tweener tweenB = slotParent.DOMove(posA, duration);
 
@@ -83,20 +82,17 @@ public class GameManagerMove : MonoBehaviour
 
         seq.OnComplete(() =>
         {
-            // Hủy tween
             tweenA.Kill();
             tweenB.Kill();
             rotA_Tween.Kill();
             rotB_Tween.Kill();
 
-            // Hoán đổi vị trí
             currentBlockParent.position = posB;
             currentBlockParent.rotation = rotB;
 
             slotParent.position = posA;
             slotParent.rotation = rotA;
 
-            // Bật lại collider
             if (colA != null) colA.enabled = true;
             if (colB != null) colB.enabled = true;
 
@@ -105,14 +101,14 @@ public class GameManagerMove : MonoBehaviour
             currentBlock = null;
             currentBlockParent = null;
 
-            // Kiểm tra đích và thắng
             if (WinConditionChecker.Instance != null && gameManager != null)
             {
                 int levelIndex = gameManager.GetCurrentLevelIndex();
                 WinConditionChecker.Instance.SetupLevel(levelIndex);
                 WinConditionChecker.Instance.UpdatePlayerPositions();
-                WinConditionChecker.Instance.CheckDestinationObjects(); 
+                WinConditionChecker.Instance.CheckDestinationObjects();
                 WinConditionChecker.Instance.CheckWinCondition();
+                WinConditionChecker.Instance.IncrementMoveCount();
             }
         });
     }

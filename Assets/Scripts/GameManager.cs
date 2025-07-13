@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
             });
         }
     }
+
     void ShowCanvas(GameObject targetCanvas)
     {
         canvasHome.SetActive(targetCanvas == canvasHome);
@@ -85,6 +86,11 @@ public class GameManager : MonoBehaviour
             currentLevelIndex = level - 1;
             currentLevel = Instantiate(levelPrefabs[currentLevelIndex], levelParent);
 
+            if (WinConditionChecker.Instance != null)
+            {
+                WinConditionChecker.Instance.ResetMoveCount();
+            }
+
             Button[] buttons = currentLevel.GetComponentsInChildren<Button>();
             foreach (Button btn in buttons)
             {
@@ -104,6 +110,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     public void ShowWinCanvas()
     {
         canvasHome.SetActive(false);
@@ -159,6 +166,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     public void ShowLoseCanvas()
     {
         HideAllCanvases();
@@ -190,6 +198,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     void DisableOtherButtons(GameObject activeCanvas)
     {
         Button[] allButtons = FindObjectsOfType<Button>(true);
@@ -199,6 +208,7 @@ public class GameManager : MonoBehaviour
             btn.interactable = inActiveCanvas;
         }
     }
+
     void EnableAllButtons()
     {
         Button[] allButtons = FindObjectsOfType<Button>(true);
@@ -207,6 +217,7 @@ public class GameManager : MonoBehaviour
             btn.interactable = true;
         }
     }
+
     void HideAllCanvases()
     {
         canvasHome.SetActive(false);
@@ -217,6 +228,7 @@ public class GameManager : MonoBehaviour
 
         EnableAllButtons();
     }
+
     public int GetCurrentLevelIndex()
     {
         return currentLevelIndex;
