@@ -7,17 +7,16 @@ public class GameManagerMove : MonoBehaviour
     public static GameManagerMove Instance;
 
     [Header("Các slot sẽ hiển thị khi click block")]
-    public List<GameObject> hiddenObjects = new List<GameObject>();   // Slot con
+    public List<GameObject> hiddenObjects = new List<GameObject>();
     [Header("Parent của các slot")]
-    public List<Transform> hiddenParents = new List<Transform>();     // Slot parent
+    public List<Transform> hiddenParents = new List<Transform>();
 
     private ClickableBlock currentBlock;
-    private Transform currentBlockParent;  // ⭐ Parent của block đang chọn
+    private Transform currentBlockParent;
 
-    private void Awake()
+    void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        Instance = this;
     }
 
     public void ShowHiddenObjects()
@@ -44,7 +43,6 @@ public class GameManagerMove : MonoBehaviour
     {
         if (currentBlockParent == null || slotParent == null) return;
 
-        // Lưu lại transform (không lấy lại sau tween vì có thể lệch)
         Vector3 posA = currentBlockParent.position;
         Quaternion rotA = currentBlockParent.rotation;
 
@@ -53,14 +51,12 @@ public class GameManagerMove : MonoBehaviour
 
         float duration = currentBlock.GetMoveDuration();
 
-        // Tắt collider
         Collider colA = currentBlockParent.GetComponentInChildren<Collider>();
         Collider colB = slotParent.GetComponentInChildren<Collider>();
 
         if (colA != null) colA.enabled = false;
         if (colB != null) colB.enabled = false;
 
-        // Tạo tween và giữ reference để Kill
         Tweener tweenA = currentBlockParent.DOMove(posB, duration);
         Tweener tweenB = slotParent.DOMove(posA, duration);
 
@@ -75,20 +71,17 @@ public class GameManagerMove : MonoBehaviour
 
         seq.OnComplete(() =>
         {
-            // Kill tween để ngắt ảnh hưởng
             tweenA.Kill();
             tweenB.Kill();
             rotA_Tween.Kill();
             rotB_Tween.Kill();
 
-            // 🔁 Hoán đổi thật sự
             currentBlockParent.position = posB;
             currentBlockParent.rotation = rotB;
 
             slotParent.position = posA;
             slotParent.rotation = rotA;
 
-            // Bật lại collider
             if (colA != null) colA.enabled = true;
             if (colB != null) colB.enabled = true;
 
@@ -98,6 +91,4 @@ public class GameManagerMove : MonoBehaviour
             currentBlockParent = null;
         });
     }
-
-
 }

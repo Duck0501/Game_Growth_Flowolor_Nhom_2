@@ -2160,7 +2160,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &818974256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3945,7 +3945,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -20}
-  m_SizeDelta: {x: 400, y: 480}
+  m_SizeDelta: {x: 350, y: 480}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1461236607
 MonoBehaviour:
@@ -3968,19 +3968,21 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 4a0a2fb58b1ea3b4f947069072d45d2b, type: 3}
-    m_FontSize: 30
+    m_Font: {fileID: 12800000, guid: 43a1374d98b61aa40be174014f4de385, type: 3}
+    m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 3
-    m_MaxSize: 40
+    m_MaxSize: 50
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: New Text
+    m_LineSpacing: 1.5
+  m_Text: "l\u1EF1a ch\u1ECDn v\u1ECB tr\xED \u0111\u1EB7t m\xE0u sao cho gi\u1ED1ng
+    m\xE0u v\u1EDBi \xF4 \u0111\xE3 \u0111\u01B0\u1EE3c cho s\u1EB5n \u0111\u1EC3
+    d\xE0nh chi\u1EBFn th\u1EAFng\r"
 --- !u!222 &1461236608
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -1,9 +1,11 @@
-using System.Collections;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
     public GameObject canvasHome;
     public GameObject canvasHelp;
     public GameObject canvasLevel;
@@ -22,6 +24,20 @@ public class GameManager : MonoBehaviour
     public Button[] levelButtons;
 
     private int currentLevelIndex = -1;
+    private List<WinBlock> winBlocks = new List<WinBlock>();
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -60,6 +76,7 @@ public class GameManager : MonoBehaviour
         canvasHome.SetActive(targetCanvas == canvasHome);
         canvasHelp.SetActive(targetCanvas == canvasHelp);
         canvasWin.SetActive(targetCanvas == canvasWin);
+        canvasLose.SetActive(targetCanvas == canvasLose);
         canvasLevel.SetActive(targetCanvas == canvasLevel);
         if (targetCanvas == canvasWin || targetCanvas == canvasLose)
         {
@@ -74,7 +91,7 @@ public class GameManager : MonoBehaviour
     public void LoadLevel(int level)
     {
         HideAllCanvases();
-
+        winBlocks.Clear();
         if (currentLevel != null)
         {
             Destroy(currentLevel);
@@ -108,6 +125,7 @@ public class GameManager : MonoBehaviour
     {
         canvasHome.SetActive(false);
         canvasHelp.SetActive(false);
+        canvasLose.SetActive(false);
         canvasWin.SetActive(true);
         DisableOtherButtons(canvasWin);
 
@@ -161,7 +179,9 @@ public class GameManager : MonoBehaviour
     }
     public void ShowLoseCanvas()
     {
-        HideAllCanvases();
+        canvasHome.SetActive(false);
+        canvasHelp.SetActive(false);
+        canvasWin.SetActive(false);
         canvasLose.SetActive(true);
         DisableOtherButtons(canvasLose);
 
@@ -220,5 +240,23 @@ public class GameManager : MonoBehaviour
     public int GetCurrentLevelIndex()
     {
         return currentLevelIndex;
+    }
+    public void RegisterWinBlock(WinBlock block)
+    {
+        if (!winBlocks.Contains(block))
+        {
+            winBlocks.Add(block);
+        }
+    }
+
+    public void CheckAllWinBlocksMatched()
+    {
+        foreach (WinBlock block in winBlocks)
+        {
+            if (!block.IsMatched())
+                return;
+        }
+
+        ShowWinCanvas();
     }
 }
