@@ -148,6 +148,12 @@ public class WinBlock : MonoBehaviour
         appearObject.transform.position = startPos;
         appearObject.SetActive(true);
 
+        ShopManager shopManager = FindObjectOfType<ShopManager>();
+        if (shopManager != null)
+        {
+            shopManager.SetAppearObject(appearObject);
+        }
+
         appearObject.transform.DOMoveY(lastVisiblePosition.y, moveDuration)
             .SetEase(Ease.OutBack)
             .OnComplete(() =>

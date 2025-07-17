@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public GameObject canvasLevel;
     public GameObject canvasWin;
     public GameObject canvasLose;
+    public GameObject canvasShop;
     public GameObject currentLevel;
     public GameObject[] levelPrefabs;
 
@@ -23,6 +24,8 @@ public class GameManager : MonoBehaviour
 
     public Button buttonPlay;
     public Button buttonHelp;
+    public Button buttonShop;
+    public Button buttonExitShop;
     public Button buttonExitHelp;
     public Button buttonExitLevel;
 
@@ -78,6 +81,16 @@ public class GameManager : MonoBehaviour
             ShowCanvas(canvasHome);
         });
 
+        buttonShop.onClick.AddListener(() =>
+        {
+            ShowCanvas(canvasShop);
+        });
+
+        buttonExitShop.onClick.AddListener(() =>
+        {
+            ShowCanvas(canvasHome);
+        });
+
         for (int i = 0; i < levelButtons.Length; i++)
         {
             int level = i + 1;
@@ -96,6 +109,7 @@ public class GameManager : MonoBehaviour
         canvasWin.SetActive(targetCanvas == canvasWin);
         canvasLose.SetActive(targetCanvas == canvasLose);
         canvasLevel.SetActive(targetCanvas == canvasLevel);
+        canvasShop.SetActive(targetCanvas == canvasShop);
         if (targetCanvas == canvasWin || targetCanvas == canvasLose)
         {
             DisableOtherButtons(targetCanvas);
@@ -147,6 +161,7 @@ public class GameManager : MonoBehaviour
         canvasHome.SetActive(false);
         canvasHelp.SetActive(false);
         canvasLose.SetActive(false);
+        canvasShop.SetActive(false);
         canvasWin.SetActive(true);
         DisableOtherButtons(canvasWin);
 
@@ -214,6 +229,7 @@ public class GameManager : MonoBehaviour
         canvasHome.SetActive(false);
         canvasHelp.SetActive(false);
         canvasWin.SetActive(false);
+        canvasShop.SetActive(false);
         canvasLose.SetActive(true);
         DisableOtherButtons(canvasLose);
 
@@ -274,6 +290,7 @@ public class GameManager : MonoBehaviour
         canvasLevel.SetActive(false);
         canvasWin.SetActive(false);
         canvasLose.SetActive(false);
+        canvasShop.SetActive(false);
 
         EnableAllButtons();
     }
