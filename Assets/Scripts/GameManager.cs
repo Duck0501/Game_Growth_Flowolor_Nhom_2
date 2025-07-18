@@ -135,7 +135,20 @@ public class GameManager : MonoBehaviour
         {
             currentLevelIndex = level - 1;
             currentLevel = Instantiate(levelPrefabs[currentLevelIndex], levelParent);
-
+            LevelQuestData questData = currentLevel.GetComponent<LevelQuestData>();
+            if (questData != null)
+            {
+                QuestSystem.Instance?.StartQuest(
+                    questData.timeLimit,
+                    questData.rewardExp,
+                    questData.rewardGold
+                );
+            }
+            else
+            {
+                // Nếu không có thì dùng mặc định
+                QuestSystem.Instance?.StartQuest();
+            }
             Button[] buttons = currentLevel.GetComponentsInChildren<Button>();
             foreach (Button btn in buttons)
             {
@@ -158,6 +171,7 @@ public class GameManager : MonoBehaviour
 
     public void ShowWinCanvas()
     {
+        QuestSystem.Instance?.OnLevelWin();
         canvasHome.SetActive(false);
         canvasHelp.SetActive(false);
         canvasLose.SetActive(false);

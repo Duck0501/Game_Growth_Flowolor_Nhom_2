@@ -33,9 +33,16 @@ public class GameManagerMove : MonoBehaviour
 
     public void SetCurrentBlock(ClickableBlock block)
     {
+        if (currentBlock != null && currentBlock != block)
+        {
+            // Nếu đang chọn block khác thì hạ block cũ xuống
+            currentBlock.ResetToOriginalState();
+        }
+
         currentBlock = block;
         currentBlockParent = block?.GetParent();
     }
+
 
     public ClickableBlock GetCurrentBlock() => currentBlock;
 
