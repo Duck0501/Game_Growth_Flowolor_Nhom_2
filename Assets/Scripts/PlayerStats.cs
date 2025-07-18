@@ -23,12 +23,20 @@ public class PlayerStats : MonoBehaviour
     private void Start()
     {
         UpdateUI();
+        if (ShopManager.Instance != null)
+        {
+            ShopManager.Instance.SyncCurrency(gold);
+        }
     }
 
     public void AddGold(int amount)
     {
         gold += amount;
         UpdateUI();
+        if (ShopManager.Instance != null)
+        {
+            ShopManager.Instance.SyncCurrency(gold);
+        }
     }
 
     public void AddExp(int amount)
@@ -39,9 +47,15 @@ public class PlayerStats : MonoBehaviour
         {
             exp -= ExpRequiredForLevel(level);
             level++;
+            AddGold(50);
         }
 
         UpdateUI();
+    }
+
+    public int GetGold()
+    {
+        return gold;
     }
 
     int ExpRequiredForLevel(int lv)

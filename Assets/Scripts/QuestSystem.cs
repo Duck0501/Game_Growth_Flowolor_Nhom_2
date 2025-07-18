@@ -35,9 +35,6 @@ public class QuestSystem : MonoBehaviour
         UpdateTimerUI();
     }
 
-    /// <summary>
-    /// Gọi từ GameManager khi load level
-    /// </summary>
     public void StartQuest(float customTimeLimit = 30f, int exp = 100, int gold = 50)
     {
         timeRemaining = customTimeLimit;
@@ -64,15 +61,16 @@ public class QuestSystem : MonoBehaviour
 
     void GrantReward()
     {
-        Debug.Log($"✅ Nhận thưởng: +{rewardExp} EXP, +{rewardGold} Gold");
-
         if (PlayerStats.Instance != null)
         {
             PlayerStats.Instance.AddExp(rewardExp);
             PlayerStats.Instance.AddGold(rewardGold);
+            if (ShopManager.Instance != null)
+            {
+                ShopManager.Instance.SyncCurrency(PlayerStats.Instance.GetGold());
+            }
         }
     }
-
 
     void UpdateTimerUI()
     {

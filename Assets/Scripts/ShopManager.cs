@@ -18,7 +18,7 @@ public class ShopManager : MonoBehaviour
     public List<ShopItem> shopItems = new List<ShopItem>();
     public Text currencyText;
     public GameObject appearObject;
-    public int playerCurrency = 1000;
+    private int playerCurrency = 0;
     private ShopItem equippedItem;
 
     public static ShopManager Instance;
@@ -95,6 +95,10 @@ public class ShopManager : MonoBehaviour
                 item.isPurchased = true;
                 UpdateCurrencyText();
                 UpdateButtonText(item, buttonText);
+                if (PlayerStats.Instance != null)
+                {
+                    PlayerStats.Instance.AddGold(-item.price);
+                }
             }
         }
         else if (!item.isEquipped)
@@ -145,5 +149,11 @@ public class ShopManager : MonoBehaviour
                 meshFilter.mesh = equippedItem.mesh;
             }
         }
+    }
+
+    public void SyncCurrency(int newCurrency)
+    {
+        playerCurrency = newCurrency;
+        UpdateCurrencyText();
     }
 }
