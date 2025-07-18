@@ -1020,6 +1020,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2593968977868006011}
+  - component: {fileID: 8136085641753453980}
   m_Layer: 0
   m_Name: Level 1
   m_TagString: Untagged
@@ -1048,6 +1049,21 @@ Transform:
   - {fileID: 3305787147525825492}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8136085641753453980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6375851239526330568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ae0cd3584ae4d84da9546df7381dcfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeLimit: 10
+  rewardExp: 100
+  rewardGold: 50
 --- !u!1 &6796181546647106704
 GameObject:
   m_ObjectHideFlags: 0
