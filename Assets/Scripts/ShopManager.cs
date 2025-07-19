@@ -38,13 +38,14 @@ public class ShopManager : MonoBehaviour
 
     void Start()
     {
+        LoadShopData();
         InitializeShop();
         UpdateCurrencyText();
     }
 
     void InitializeShop()
     {
-        if (shopItems.Count > 0)
+        if (shopItems.Count > 0 && !PlayerPrefs.HasKey("ShopItem_0_Purchased"))
         {
             shopItems[0].isPurchased = true;
             shopItems[0].isEquipped = true;
@@ -99,11 +100,13 @@ public class ShopManager : MonoBehaviour
                 {
                     PlayerStats.Instance.AddGold(-item.price);
                 }
+                SaveShopData();
             }
         }
         else if (!item.isEquipped)
         {
             EquipItem(item);
+            SaveShopData();
         }
     }
 
@@ -155,5 +158,28 @@ public class ShopManager : MonoBehaviour
     {
         playerCurrency = newCurrency;
         UpdateCurrencyText();
+    }
+
+    void SaveShopData()
+    {
+        for (int i = 0; i < shopItems.Count; i++)
+        {
+            PlayerPrefs.SetInt($"ShopItem_{i}_Purchased", shopItems[i].isPurchased ? 1 : 0);
+            PlayerPrefs.SetInt($"ShopItem_{i}_Equipped", shopItems[i].isEquipped ? 1 : 0);
+        }
+        PlayerPrefs.Save();
+    }
+
+    void LoadShopData()
+    {
+        for (int i = 0; i < shopItems.Count; i++)
+        {
+            shopItems[i].isPurchased = PlayerPrefs.GetInt($"ShopItem_{i}_Purchased", 0) == 1;
+            shopItems[i].isEquipped = PlayerPrefs.GetInt($"ShopItem_{i}_Equipped", 0) == 1;
+            if (shopItems[i].isEquipped)
+            {
+                equippedItem = shopItems[i];
+            }
+        }
     }
 }

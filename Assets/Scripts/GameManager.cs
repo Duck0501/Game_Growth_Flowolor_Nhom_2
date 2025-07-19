@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject canvasWin;
     public GameObject canvasLose;
     public GameObject canvasShop;
+    public GameObject canvasBonus;
     public GameObject currentLevel;
     public GameObject[] levelPrefabs;
 
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
     private int currentLevelIndex = -1;
     private List<WinBlock> winBlocks = new List<WinBlock>();
     private int moveCount = 0;
+    private bool hasShownBonusThisSession = false;
 
     void Awake()
     {
@@ -52,6 +54,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        hasShownBonusThisSession = false;
         ShowCanvas(canvasHome);
 
         if (audioSource != null && bgMusic != null)
@@ -110,6 +113,10 @@ public class GameManager : MonoBehaviour
         canvasLose.SetActive(targetCanvas == canvasLose);
         canvasLevel.SetActive(targetCanvas == canvasLevel);
         canvasShop.SetActive(targetCanvas == canvasShop);
+        if (canvasBonus != null)
+        {
+            canvasBonus.SetActive(targetCanvas == canvasHome && !hasShownBonusThisSession);
+        }
         if (targetCanvas == canvasWin || targetCanvas == canvasLose)
         {
             DisableOtherButtons(targetCanvas);
@@ -118,6 +125,11 @@ public class GameManager : MonoBehaviour
         {
             EnableAllButtons();
         }
+    }
+
+    public void OnBonusCanvasHidden()
+    {
+        hasShownBonusThisSession = true;
     }
 
     public void LoadLevel(int level)
@@ -146,7 +158,6 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                // Nếu không có thì dùng mặc định
                 QuestSystem.Instance?.StartQuest();
             }
             Button[] buttons = currentLevel.GetComponentsInChildren<Button>();
@@ -176,6 +187,7 @@ public class GameManager : MonoBehaviour
         canvasHelp.SetActive(false);
         canvasLose.SetActive(false);
         canvasShop.SetActive(false);
+        canvasBonus.SetActive(false);
         canvasWin.SetActive(true);
         DisableOtherButtons(canvasWin);
 
@@ -188,6 +200,8 @@ public class GameManager : MonoBehaviour
         {
             scoreText.text = "Score: " + moveCount;
         }
+
+        SaveHighScore();
 
         Button[] winButtons = canvasWin.GetComponentsInChildren<Button>();
         foreach (Button btn in winButtons)
@@ -244,6 +258,7 @@ public class GameManager : MonoBehaviour
         canvasHelp.SetActive(false);
         canvasWin.SetActive(false);
         canvasShop.SetActive(false);
+        canvasBonus.SetActive(false);
         canvasLose.SetActive(true);
         DisableOtherButtons(canvasLose);
 
@@ -305,6 +320,7 @@ public class GameManager : MonoBehaviour
         canvasWin.SetActive(false);
         canvasLose.SetActive(false);
         canvasShop.SetActive(false);
+        canvasBonus.SetActive(false);
 
         EnableAllButtons();
     }
@@ -335,6 +351,8 @@ public class GameManager : MonoBehaviour
 
     public void IncrementMoveCount()
     {
+        if (QuestSystem.Instance != null && !QuestSystem.Instance.IsQuestActive()) return;
+
         moveCount++;
         UpdateMoveCountText();
         if (moveCount > 20)
@@ -349,5 +367,28 @@ public class GameManager : MonoBehaviour
         {
             moveCountText.text = "Move: " + moveCount;
         }
+    }
+
+    public bool IsQuestActive()
+    {
+        return QuestSystem.Instance != null && QuestSystem.Instance.IsQuestActive();
+    }
+
+    void SaveHighScore()
+    {
+        if (currentLevelIndex >= 0)
+        {
+            int highScore = PlayerPrefs.GetInt($"HighScore_Level_{currentLevelIndex}", int.MaxValue);
+            if (moveCount < highScore)
+            {
+                PlayerPrefs.SetInt($"HighScore_Level_{currentLevelIndex}", moveCount);
+                PlayerPrefs.Save();
+            }
+        }
+    }
+
+    public int GetHighScore(int levelIndex)
+    {
+        return PlayerPrefs.GetInt($"HighScore_Level_{levelIndex}", int.MaxValue);
     }
 }

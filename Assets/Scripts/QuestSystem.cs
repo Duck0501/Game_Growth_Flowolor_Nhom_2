@@ -30,6 +30,7 @@ public class QuestSystem : MonoBehaviour
         {
             timeRemaining = 0;
             isQuestActive = false;
+            GameManager.Instance?.ShowLoseCanvas();
         }
 
         UpdateTimerUI();
@@ -78,5 +79,10 @@ public class QuestSystem : MonoBehaviour
         {
             timerText.text = "Time in: " + Mathf.CeilToInt(timeRemaining).ToString() + "s";
         }
+    }
+
+    public bool IsQuestActive()
+    {
+        return isQuestActive;
     }
 }

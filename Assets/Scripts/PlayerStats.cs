@@ -22,6 +22,7 @@ public class PlayerStats : MonoBehaviour
 
     private void Start()
     {
+        LoadPlayerData();
         UpdateUI();
         if (ShopManager.Instance != null)
         {
@@ -33,6 +34,7 @@ public class PlayerStats : MonoBehaviour
     {
         gold += amount;
         UpdateUI();
+        SavePlayerData();
         if (ShopManager.Instance != null)
         {
             ShopManager.Instance.SyncCurrency(gold);
@@ -51,6 +53,7 @@ public class PlayerStats : MonoBehaviour
         }
 
         UpdateUI();
+        SavePlayerData();
     }
 
     public int GetGold()
@@ -68,5 +71,20 @@ public class PlayerStats : MonoBehaviour
         if (goldText) goldText.text = "Gold: " + gold;
         if (expText) expText.text = "Exp: " + exp + " / " + ExpRequiredForLevel(level);
         if (levelText) levelText.text = "Level: " + level;
+    }
+
+    void SavePlayerData()
+    {
+        PlayerPrefs.SetInt("PlayerGold", gold);
+        PlayerPrefs.SetInt("PlayerExp", exp);
+        PlayerPrefs.SetInt("PlayerLevel", level);
+        PlayerPrefs.Save();
+    }
+
+    void LoadPlayerData()
+    {
+        gold = PlayerPrefs.GetInt("PlayerGold", 0);
+        exp = PlayerPrefs.GetInt("PlayerExp", 0);
+        level = PlayerPrefs.GetInt("PlayerLevel", 1);
     }
 }
